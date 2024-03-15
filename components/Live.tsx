@@ -4,6 +4,8 @@ import { useMyPresence, useOthers } from '@/liveblocks.config';
 import CursorChat from './cursor/CursorChat';
 import { CursorMode, CursorState, Reaction } from '@/types/type';
 import ReactionSelector from './reaction/ReactionButton';
+import FlyingReaction from './reaction/FlyingReaction';
+import useInterval from '@/hooks/useInterval';
 
 const Live = () => {
   const others = useOthers();
@@ -12,7 +14,25 @@ const Live = () => {
     mode: CursorMode.Hidden,
   });
 
-  const [reactions, setReactions] = useState<Reaction[]>([]);
+  const [reaction, setReaction] = useState<Reaction[]>([]);
+
+  useInterval(() => {
+    if (
+      cursorState.mode === CursorMode.Reaction &&
+      cursorState.isPressed &&
+      cursor
+    ) {
+      setReaction((reactions) =>
+        reactions.concat([
+          {
+            point: { x: cursor.x, y: cursor.y },
+            value: cursorState.reaction,
+            timestamp: Date.now(),
+          },
+        ]),
+      );
+    }
+  }, 100);
 
   const handlePointerMove = useCallback((event: React.PointerEvent) => {
     event.preventDefault();
@@ -93,9 +113,7 @@ const Live = () => {
     };
   }, [updateMyPresence]);
 
-  // TODO: fix setReactions/setReaction from 1:15
-
-  const setReaction = useCallback((reaction: string) => {
+  const setReactions = useCallback((reaction: string) => {
     setCursorState({
       mode: CursorMode.Reaction,
       reaction,
@@ -112,6 +130,16 @@ const Live = () => {
       className='h-screen w-full flex items-center justify-center text-center'>
       <h1 className='text-2xl text-white'>Liveblock Figma Clone</h1>
 
+      {reaction.map((r) => (
+        <FlyingReaction
+          key={r.timestamp.toString()}
+          x={r.point.x}
+          y={r.point.y}
+          timestamp={r.timestamp}
+          value={r.value}
+        />
+      ))}
+
       {cursor && (
         <CursorChat
           cursor={cursor}
@@ -122,7 +150,7 @@ const Live = () => {
       )}
 
       {cursorState.mode === CursorMode.ReactionSelector && (
-        <ReactionSelector setReaction={setReaction} />
+        <ReactionSelector setReaction={setReactions} />
       )}
       <LiveCursors others={others} />
     </div>
