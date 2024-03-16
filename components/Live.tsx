@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useCallback, useEffect, useState } from 'react';
 import LiveCursors from './cursor/LiveCursors';
 import {
@@ -12,7 +14,11 @@ import ReactionSelector from './reaction/ReactionButton';
 import FlyingReaction from './reaction/FlyingReaction';
 import useInterval from '@/hooks/useInterval';
 
-const Live = () => {
+type Props = {
+  canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
+};
+
+const Live = ({ canvasRef }: Props) => {
   const others = useOthers();
   const [{ cursor }, updateMyPresence] = useMyPresence() as any;
   const [cursorState, setCursorState] = useState<CursorState>({
@@ -157,12 +163,13 @@ const Live = () => {
 
   return (
     <div
+      id='canvas'
       onPointerMove={handlePointerMove}
       onPointerLeave={handlePointerLeave}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       className='h-screen w-full flex items-center justify-center text-center'>
-      <canvas />
+      <canvas ref={canvasRef}></canvas>
 
       {reaction.map((r) => (
         <FlyingReaction
