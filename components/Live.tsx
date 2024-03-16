@@ -37,7 +37,6 @@ const Live = () => {
     ) {
       setReaction((reactions) =>
         reactions.concat([
-          // TODO: handle nulish ?. here
           {
             point: { x: cursor.x, y: cursor.y },
             value: cursorState.reaction,
@@ -48,6 +47,7 @@ const Live = () => {
     }
 
     broadcast({
+      // TODO: handle nulish ?. here
       x: cursor?.x,
       y: cursor?.y,
       value: cursorState?.reaction,
