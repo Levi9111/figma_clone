@@ -1,5 +1,5 @@
-import { BaseUserMeta, User } from "@liveblocks/client";
-import { Gradient, Pattern } from "fabric/fabric-impl";
+import { BaseUserMeta, User } from '@liveblocks/client';
+import { Gradient, Pattern } from 'fabric/fabric-impl';
 
 export enum CursorMode {
   Hidden,
@@ -187,6 +187,6 @@ export type CursorChatProps = {
       cursor: { x: number; y: number };
       cursorColor: string;
       message: string;
-    }>
+    }>,
   ) => void;
 };
