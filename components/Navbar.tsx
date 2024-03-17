@@ -27,9 +27,9 @@ const Navbar = ({
       <Image src='/assets/logo.svg' alt='FigPro Logo' width={58} height={20} />
 
       <ul className='flex flex-row'>
-        {navElements.map((item: ActiveElement | any) => (
+        {navElements.map((item: ActiveElement | any, index: number) => (
           <li
-            key={item.name}
+            key={`${item.name}-${index}`}
             onClick={() => {
               if (Array.isArray(item.value)) return;
               handleActiveElement(item);
